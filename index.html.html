@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Infografía interactiva sobre balonmano para jóvenes — Domina el Balonmano" />
+  <meta name="theme-color" content="#FF6B35" />
+  <title>¡Domina el Balonmano!</title>
+
+  <!-- PWA Manifest inline -->
+  <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%C2%A1Domina%20el%20Balonmano%21%22%2C%22short_name%22%3A%22Balonmano%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F0F7FF%22%2C%22theme_color%22%3A%22%23FF6B35%22%7D" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #F0F7FF;
+      color: #1a1a2e;
+      overflow-x: hidden;
+    }
+
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --orange: #FF6B35;
+      --yellow: #FFD60A;
+      --blue: #1B74E4;
+      --green: #2ECC71;
+      --red: #E74C3C;
+      --bg: #F0F7FF;
+      --dark: #0d1b2a;
+      --card-shadow: 0 8px 32px rgba(27,116,228,0.12);
+      --card-hover-shadow: 0 20px 48px rgba(255,107,53,0.22);
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ball-bounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      40% { transform: translateY(-18px) rotate(180deg); }
+      60% { transform: translateY(-10px) rotate(270deg); }
+    }
+    @keyframes slide-in-left {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
+      50% { box-shadow: 0 0 0 16px rgba(255,107,53,0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(255,107,53,0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(27,116,228,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 80%, rgba(255,214,10,0.08) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    /* grid lines decoration */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,107,53,0.18);
+      border: 1.5px solid rgba(255,107,53,0.5);
+      color: var(--orange);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      animation: fade-in 0.6s ease both;
+    }
+
+    .hero-ball {
+      font-size: 5rem;
+      animation: ball-bounce 2.4s ease-in-out infinite;
+      display: block;
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 8vw, 5.5rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.05;
+      animation: fade-in 0.7s 0.2s ease both;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 span {
+      color: var(--orange);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 3vw, 1.4rem);
+      color: rgba(255,255,255,0.72);
+      margin-top: 1rem;
+      max-width: 560px;
+      animation: fade-in 0.7s 0.4s ease both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 14px 36px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      border-radius: 100px;
+      text-decoration: none;
+      animation: fade-in 0.7s 0.6s ease both, glow-pulse 2.5s 1.5s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .hero-cta:hover { transform: translateY(-3px); background: #e85a24; color: #fff; }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.35);
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 1;
+    }
+    .hero-scroll-hint::after {
+      content: '↓';
+      font-size: 1.2rem;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    /* ===== SECTION WRAPPER ===== */
+    .section {
+      padding: 5rem 1.5rem;
+      animation: fade-in 0.8s ease both;
+    }
+    .section-label {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: #4a5568;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ===== INTRO SECTION ===== */
+    .intro-section { background: #fff; }
+    .intro-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      animation: slide-in-left 0.6s ease both;
+    }
+    .timeline-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .timeline-dot.orange { background: rgba(255,107,53,0.12); color: var(--orange); }
+    .timeline-dot.blue   { background: rgba(27,116,228,0.12); color: var(--blue); }
+    .timeline-dot.green  { background: rgba(46,204,113,0.12); color: var(--green); }
+    .timeline-text strong { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; }
+    .timeline-text p { font-size: 0.95rem; color: #4a5568; margin: 0; }
+
+    /* ===== IDEA CENTRAL ===== */
+    .idea-section { background: var(--dark); }
+    .idea-card {
+      background: var(--orange);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    .idea-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .idea-card::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: -30px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .idea-icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .idea-card h2 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .idea-card p { color: rgba(255,255,255,0.85); font-size: 1.1rem; margin-top: 0.8rem; }
+
+    /* ===== DATA CARDS ===== */
+    .data-section { background: #F0F7FF; }
+    .data-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+      height: 100%;
+    }
+    .data-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--card-hover-shadow);
+    }
+    .data-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1rem;
+    }
+    .data-icon.orange { background: rgba(255,107,53,0.12); }
+    .data-icon.blue   { background: rgba(27,116,228,0.12); }
+    .data-icon.green  { background: rgba(46,204,113,0.12); }
+    .data-icon.yellow { background: rgba(255,214,10,0.18); }
+    .data-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .data-number.orange { color: var(--orange); }
+    .data-number.blue   { color: var(--blue); }
+    .data-number.green  { color: var(--green); }
+    .data-number.yellow { color: #c8a800; }
+    .data-label {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-top: 0.4rem;
+    }
+    .data-desc { font-size: 0.9rem; color: #6b7280; margin-top: 0.3rem; }
+
+    /* ===== STEPS / TÉCNICAS ===== */
+    .steps-section { background: #fff; }
+    .step-card {
+      background: #F0F7FF;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      height: 100%;
+      border-left: 5px solid transparent;
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s, border-color 0.3s;
+    }
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--card-hover-shadow);
+      border-left-color: var(--orange);
+    }
+    .step-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(255,107,53,0.15);
+      line-height: 1;
+    }
+    .step-emoji { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .step-card h4 { font-size: 1.25rem; font-weight: 700; color: var(--dark); }
+    .step-card p { font-size: 0.95rem; color: #4a5568; margin-top: 0.4rem; line-height: 1.6; }
+
+    /* ===== CAMPO SVG ===== */
+    .field-section { background: var(--dark); }
+    .field-container {
+      background: #1a2744;
+      border-radius: 24px;
+      padding: 2rem 1rem;
+      overflow-x: auto;
+    }
+    .field-container svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .field-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.88rem;
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ===== PORTERO CARD ===== */
+    .goalkeeper-section { background: #F0F7FF; }
+    .gk-card {
+      background: var(--blue);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(27,116,228,0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .gk-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 24px 60px rgba(27,116,228,0.4);
+    }
+    .gk-card::before {
+      content: '🧤';
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      font-size: 9rem;
+      opacity: 0.08;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .gk-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+    .gk-skills {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+    .gk-skill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+    }
+    .gk-skill-icon { font-size: 1.3rem; }
+
+    /* ===== MASCOTA / GUIDE ===== */
+    .mascot-box {
+      background: rgba(255,214,10,0.12);
+      border: 2px solid rgba(255,214,10,0.5);
+      border-radius: 16px;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .mascot-avatar {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .mascot-text {
+      font-size: 1rem;
+      color: #5a4000;
+      line-height: 1.6;
+    }
+    .mascot-text strong { color: #b07800; font-family: 'Outfit', sans-serif; }
+
+    /* ===== QUIZ ===== */
+    .quiz-section { background: var(--dark); }
+    .quiz-container { max-width: 720px; margin: 0 auto; }
+    .quiz-progress-bar {
+      height: 5px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 100px;
+      margin-bottom: 2.5rem;
+      overflow: hidden;
+    }
+    .quiz-progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 100px;
+      transition: width 0.5s ease;
+    }
+    .quiz-card {
+      background: #1a2744;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+    }
+    .quiz-question-num {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.6rem;
+    }
+    .quiz-question-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .quiz-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quiz-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--orange);
+      transform: translateX(4px);
+    }
+    .quiz-btn.correct {
+      background: rgba(46,204,113,0.2);
+      border-color: var(--green);
+      color: #2ECC71;
+    }
+    .quiz-btn.wrong {
+      background: rgba(231,76,60,0.2);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .quiz-btn:disabled { cursor: not-allowed; }
+    .quiz-btn-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .quiz-feedback {
+      margin-top: 1.2rem;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct { background: rgba(46,204,113,0.15); color: #2ECC71; }
+    .quiz-feedback.wrong { background: rgba(231,76,60,0.15); color: var(--red); }
+
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+    .quiz-nav-btn {
+      padding: 10px 28px;
+      border-radius: 100px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .quiz-nav-btn:hover { transform: translateY(-2px); }
+    .quiz-nav-btn.primary { background: var(--orange); color: #fff; }
+    .quiz-nav-btn.secondary {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.6);
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+    .quiz-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .quiz-score-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--yellow);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .quiz-result {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+    }
+    .quiz-result-emoji { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .quiz-result h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+    }
+    .quiz-result p { color: rgba(255,255,255,0.7); margin-top: 0.5rem; }
+    .quiz-result .score-big {
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--orange);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1;
+      display: block;
+      margin: 1rem 0;
+    }
+    .quiz-retry-btn {
+      margin-top: 1.5rem;
+      padding: 12px 32px;
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .quiz-retry-btn:hover { transform: translateY(-3px); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #0d1420;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 3rem 1.5rem;
+      font-size: 0.92rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer strong { color: var(--orange); }
+    footer .footer-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+    footer p { margin: 0.2rem 0; }
+    footer .footer-divider {
+      width: 40px;
+      height: 3px;
+      background: var(--orange);
+      border-radius: 100px;
+      margin: 1rem auto;
+    }
+
+    /* ===== UTILITIES ===== */
+    .mt-section { margin-top: 3rem; }
+    .text-white-70 { color: rgba(255,255,255,0.7); }
+    .divider-line {
+      width: 60px;
+      height: 4px;
+      background: var(--orange);
+      border-radius: 100px;
+      margin: 0.8rem 0 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" role="banner">
+    <div class="hero-badge" aria-label="Infografía interactiva">
+      ⚡ Infografía Interactiva · 2026
+    </div>
+    <span class="hero-ball" role="img" aria-label="balón de balonmano">🤾</span>
+    <h1>¡Domina el<span>Balonmano!</span></h1>
+    <p class="hero-sub">Tu guía visual para entender el deporte más explosivo del mundo. Aprende las reglas, el campo y ¡demuestra lo que sabes!</p>
+    <a href="#intro" class="hero-cta" aria-label="Comenzar a explorar la infografía">Empezar ahora →</a>
+    <div class="hero-scroll-hint" aria-hidden="true">Desliza</div>
+  </header>
+
+  <!-- ===== INTRO ===== -->
+  <section id="intro" class="section intro-section" aria-labelledby="intro-title">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <p class="section-label">Orígenes</p>
+          <div class="divider-line"></div>
+          <h2 class="section-title" id="intro-title">Un deporte con historia</h2>
+
+          <div class="mascot-box mb-4" role="note" aria-label="Mensaje de tu guía Rex">
+            <span class="mascot-avatar" aria-hidden="true">🦊</span>
+            <div class="mascot-text">
+              <strong>¡Hola! Soy Rex, tu guía ágil 🦊</strong><br/>
+              Juntos vamos a descubrir todo lo que necesitas saber sobre el balonmano. ¡Prepárate para sorprenderte!
+            </div>
+          </div>
+
+          <div class="intro-timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot orange" aria-hidden="true">🏃</div>
+              <div class="timeline-text">
+                <strong>Finales del siglo XIX</strong>
+                <p>El balonmano moderno surge en Europa del Norte. Alemania y Dinamarca lo desarrollan como disciplina escolar y militares.</p>
+              </div>
+            </div>
+            <div class="timeline-item" style="animation-delay:0.15s">
+              <div class="timeline-dot blue" aria-hidden="true">🏟️</div>
+              <div class="timeline-text">
+                <strong>1936 — Primer partido olímpico</strong>
+                <p>Debuta en los Juegos Olímpicos de Berlín con formato de campo exterior (11 jugadores). El deporte está evolucionando rápidamente.</p>
+              </div>
+            </div>
+            <div class="timeline-item" style="animation-delay:0.3s">
+              <div class="timeline-dot green" aria-hidden="true">⭐</div>
+              <div class="timeline-text">
+                <strong>Hoy — 7 jugadores en pista</strong>
+                <p>El formato indoor de 7 vs 7 domina el mundo. Velocidad, fuerza y precisión en cada lanzamiento.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IDEA CENTRAL ===== -->
+  <section class="section idea-section" aria-labelledby="idea-title">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <p class="section-label text-white-70">Concepto esencial</p>
+          <div class="divider-line"></div>
+          <div class="idea-card" role="region" aria-labelledby="idea-title">
+            <span class="idea-icon" role="img" aria-label="balón entrando a la portería">🥅</span>
+            <h2 id="idea-title">MARCAR GOL</h2>
+            <p>El objetivo único y absoluto del balonmano:<br/>lanzar el balón a la portería adversaria para anotar.</p>
+          </div>
+          <div class="mascot-box mt-4" role="note">
+            <span class="mascot-avatar" aria-hidden="true">🦊</span>
+            <div class="mascot-text">
+              <strong>Rex dice:</strong> "Simple de entender, difícil de dominar. ¡Cada partido es una batalla táctica de 60 minutos!"
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DATOS CLAVE ===== -->
+  <section class="section data-section" aria-labelledby="data-title">
+    <div class="container">
+      <p class="section-label">Números que debes saber</p>
+      <div class="divider-line"></div>
+      <h2 class="section-title" id="data-title">Datos Clave del Balonmano</h2>
+      <p class="section-desc mb-5">Estas son las cifras que todo jugador y fanático debe memorizar.</p>
+
+      <div class="row g-4">
+        <div class="col-6 col-lg-3">
+          <div class="data-card" role="article" aria-label="7 jugadores por equipo">
+            <div class="data-icon orange" aria-hidden="true">👥</div>
+            <div class="data-number orange">7</div>
+            <div class="data-label">Jugadores</div>
+            <div class="data-desc">6 de campo + 1 portero por equipo</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="data-card" role="article" aria-label="2 tiempos de 30 minutos">
+            <div class="data-icon blue" aria-hidden="true">⏱️</div>
+            <div class="data-number blue">2×30</div>
+            <div class="data-label">Minutos</div>
+            <div class="data-desc">Dos tiempos de 30 min cada uno</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="data-card" role="article" aria-label="Área de 6 metros">
+            <div class="data-icon green" aria-hidden="true">📐</div>
+            <div class="data-number green">6m</div>
+            <div class="data-label">Área de portería</div>
+            <div class="data-desc">Solo el portero puede entrar aquí</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="data-card" role="article" aria-label="Línea de penalti a 7 metros">
+            <div class="data-icon yellow" aria-hidden="true">🎯</div>
+            <div class="data-number yellow">7m</div>
+            <div class="data-label">Línea de penalti</div>
+            <div class="data-desc">El duelo definitivo: lanzador vs portero</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PASOS / TÉCNICAS ===== -->
+  <section class="section steps-section" aria-labelledby="steps-title">
+    <div class="container">
+      <p class="section-label">Técnica</p>
+      <div class="divider-line"></div>
+      <h2 class="section-title" id="steps-title">Pasos para Triunfar</h2>
+      <p class="section-desc mb-5">Las tres técnicas de lanzamiento que todo jugador debe dominar.</p>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="step-card" role="article" aria-label="Técnica 1: Apoyo">
+            <div class="step-num">01</div>
+            <span class="step-emoji" aria-hidden="true">🦵</span>
+            <h4>Apoyo</h4>
+            <p>Lanzamiento con los dos pies en el suelo. Base estable, máxima precisión hacia la portería.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card" role="article" aria-label="Técnica 2: Suspensión">
+            <div class="data-num" style="display:none">02</div>
+            <div class="step-num">02</div>
+            <span class="step-emoji" aria-hidden="true">🦅</span>
+            <h4>Suspensión</h4>
+            <p>Salto en el aire al lanzar. Mayor ángulo de tiro, sorprende al portero con velocidad explosiva.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card" role="article" aria-label="Técnica 3: Cadera">
+            <div class="step-num">03</div>
+            <span class="step-emoji" aria-hidden="true">🔄</span>
+            <h4>Rotación de Cadera</h4>
+            <p>El secreto de la potencia: rotar la cadera al lanzar transfiere energía de todo el cuerpo al balón.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mascot-box mt-4" role="note">
+        <span class="mascot-avatar" aria-hidden="true">🦊</span>
+        <div class="mascot-text">
+          <strong>Rex aconseja:</strong> "¡Practica la suspensión! Los mejores goleadores del mundo anotan el 70% de sus goles en el aire. ¿Serás el próximo?"
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EL CAMPO (SVG) ===== -->
+  <section class="section field-section" aria-labelledby="field-title">
+    <div class="container">
+      <p class="section-label text-white-70">Dimensiones oficiales</p>
+      <div class="divider-line"></div>
+      <h2 class="section-title text-white" id="field-title">El Campo de Juego</h2>
+      <p class="section-desc text-white-70 mb-4">Campo rectangular de 40m × 20m con zonas claramente delimitadas.</p>
+
+      <div class="field-container" role="img" aria-label="SVG del campo de balonmano con medidas: 40 metros de largo por 20 metros de ancho, área de 6 metros y línea de penalti a 7 metros">
+        <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" width="640" height="320" aria-hidden="true">
+          <!-- Campo fondo -->
+          <rect x="20" y="20" width="600" height="280" fill="#2d5a1b" rx="4"/>
+          <!-- Líneas del campo -->
+          <rect x="20" y="20" width="600" height="280" fill="none" stroke="#fff" stroke-width="2.5" rx="4"/>
+          <!-- Línea central -->
+          <line x1="320" y1="20" x2="320" y2="300" stroke="#fff" stroke-width="2"/>
+          <!-- Círculo central -->
+          <circle cx="320" cy="160" r="38" fill="none" stroke="#fff" stroke-width="1.8" stroke-dasharray="6 3"/>
+
+          <!-- Portería izquierda -->
+          <rect x="20" y="123" width="16" height="74" fill="none" stroke="#FFD60A" stroke-width="2.5"/>
+          <!-- Portería derecha -->
+          <rect x="604" y="123" width="16" height="74" fill="none" stroke="#FFD60A" stroke-width="2.5"/>
+
+          <!-- Área 6m izquierda -->
+          <path d="M 20 110 Q 116 110 116 160 Q 116 210 20 210" fill="rgba(255,107,53,0.18)" stroke="#FF6B35" stroke-width="2"/>
+          <!-- Área 6m derecha -->
+          <path d="M 620 110 Q 524 110 524 160 Q 524 210 620 210" fill="rgba(255,107,53,0.18)" stroke="#FF6B35" stroke-width="2"/>
+
+          <!-- Línea 9m izquierda (línea punteada) -->
+          <path d="M 20 90 Q 146 90 146 160 Q 146 230 20 230" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <!-- Línea 9m derecha -->
+          <path d="M 620 90 Q 494 90 494 160 Q 494 230 620 230" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+          <!-- Punto penalti izquierdo (7m) -->
+          <circle cx="115" cy="160" r="4" fill="#FFD60A"/>
+          <!-- Punto penalti derecho (7m) -->
+          <circle cx="525" cy="160" r="4" fill="#FFD60A"/>
+
+          <!-- Marcadores de longitud 40m -->
+          <text x="320" y="16" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Outfit, sans-serif" font-weight="700">40 m</text>
+          <!-- Marcador ancho 20m -->
+          <text x="10" y="165" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="Outfit, sans-serif" font-weight="700" transform="rotate(-90,10,165)">20 m</text>
+
+          <!-- Etiqueta área 6m -->
+          <text x="75" y="155" text-anchor="middle" fill="#FF6B35" font-size="10" font-family="Outfit, sans-serif" font-weight="700">6m</text>
+          <text x="75" y="168" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="Outfit, sans-serif">Área</text>
+          <text x="565" y="155" text-anchor="middle" fill="#FF6B35" font-size="10" font-family="Outfit, sans-serif" font-weight="700">6m</text>
+          <text x="565" y="168" text-anchor="middle" fill="#FF6B35" font-size="9" font-family="Outfit, sans-serif">Área</text>
+
+          <!-- Etiqueta penalti 7m -->
+          <text x="115" y="180" text-anchor="middle" fill="#FFD60A" font-size="9" font-family="Outfit, sans-serif" font-weight="700">7m</text>
+          <text x="525" y="180" text-anchor="middle" fill="#FFD60A" font-size="9" font-family="Outfit, sans-serif" font-weight="700">7m</text>
+
+          <!-- Jugadores decorativos (círculos) -->
+          <!-- Equipo A (naranja) -->
+          <circle cx="200" cy="140" r="9" fill="#FF6B35" opacity="0.9"/>
+          <circle cx="230" cy="175" r="9" fill="#FF6B35" opacity="0.9"/>
+          <circle cx="190" cy="200" r="9" fill="#FF6B35" opacity="0.9"/>
+          <circle cx="260" cy="130" r="9" fill="#FF6B35" opacity="0.9"/>
+          <circle cx="270" cy="200" r="9" fill="#FF6B35" opacity="0.9"/>
+          <circle cx="300" cy="155" r="9" fill="#FF6B35" opacity="0.9"/>
+          <!-- Portero equipo A -->
+          <circle cx="40" cy="160" r="10" fill="#1B74E4" opacity="0.9"/>
+
+          <!-- Equipo B (azul) -->
+          <circle cx="440" cy="140" r="9" fill="#2ECC71" opacity="0.9"/>
+          <circle cx="410" cy="175" r="9" fill="#2ECC71" opacity="0.9"/>
+          <circle cx="450" cy="200" r="9" fill="#2ECC71" opacity="0.9"/>
+          <circle cx="380" cy="130" r="9" fill="#2ECC71" opacity="0.9"/>
+          <circle cx="370" cy="200" r="9" fill="#2ECC71" opacity="0.9"/>
+          <circle cx="340" cy="155" r="9" fill="#2ECC71" opacity="0.9"/>
+          <!-- Portero equipo B -->
+          <circle cx="600" cy="160" r="10" fill="#1B74E4" opacity="0.9"/>
+
+          <!-- Balón -->
+          <circle cx="320" cy="160" r="7" fill="#FFD60A"/>
+          <circle cx="320" cy="160" r="7" fill="none" stroke="#c8a800" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="field-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#FF6B35" aria-hidden="true"></div>Equipo A</div>
+        <div class="legend-dot" aria-hidden="true" style="display:none"></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2ECC71" aria-hidden="true"></div>Equipo B</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1B74E4" aria-hidden="true"></div>Porteros</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF6B35;opacity:.5" aria-hidden="true"></div>Área 6m</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FFD60A" aria-hidden="true"></div>Punto penalti 7m</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PORTERO ===== -->
+  <section class="section goalkeeper-section" aria-labelledby="gk-title">
+    <div class="container">
+      <p class="section-label">Posición clave</p>
+      <div class="divider-line"></div>
+      <h2 class="section-title" id="gk-title">El Portero: El Último Bastión</h2>
+      <p class="section-desc mb-5">Más que parar goles: el portero es el director del juego.</p>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="gk-card" role="article">
+            <div class="gk-title">🧤 El Portero Estratégico</div>
+            <p style="color:rgba(255,255,255,0.8); font-size:1rem;">Es el único jugador que puede entrar al área de 6 metros. Su rol va mucho más allá de detener lanzamientos.</p>
+            <div class="gk-skills">
+              <div class="gk-skill">
+                <span class="gk-skill-icon" aria-hidden="true">👁️</span>
+                <span><strong>Visión de juego:</strong> Lee los movimientos del rival antes de que lance.</span>
+              </div>
+              <div class="gk-skill">
+                <span class="gk-skill-icon" aria-hidden="true">⚡</span>
+                <span><strong>Contraataques:</strong> Lanza el balón rápido para iniciar jugadas de gol.</span>
+              </div>
+              <div class="gk-skill">
+                <span class="gk-skill-icon" aria-hidden="true">🎯</span>
+                <span><strong>Parada de penalti:</strong> En el mano a mano a 7m, la intuición lo es todo.</span>
+              </div>
+              <div class="gk-skill">
+                <span class="gk-skill-icon" aria-hidden="true">📢</span>
+                <span><strong>Liderazgo:</strong> Organiza la defensa y guía al equipo desde el arco.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section class="section quiz-section" aria-labelledby="quiz-title">
+    <div class="container">
+      <p class="section-label text-white-70">Demuestra tu conocimiento</p>
+      <div class="divider-line"></div>
+      <h2 class="section-title text-white" id="quiz-title">Quiz: ¿Cuánto Sabes? 🏆</h2>
+      <p class="section-desc text-white-70 mb-4">4 preguntas para poner a prueba tu conocimiento del balonmano.</p>
+
+      <div class="quiz-container">
+        <div class="quiz-progress-bar" role="progressbar" aria-label="Progreso del quiz" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div class="quiz-progress-fill" id="quizProgress" style="width:0%"></div>
+        </div>
+
+        <div class="quiz-card" id="quizCard">
+          <!-- Contenido inyectado por JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer role="contentinfo">
+    <span class="footer-logo" aria-label="Domina el Balonmano">🤾 ¡Domina el Balonmano!</span>
+    <div class="footer-divider" aria-hidden="true"></div>
+    <p>Creado por: <strong>Luciana Villón Contreras</strong></p>
+    <p>Universidad Tecnológica del Perú | 2026</p>
+    <p>Curso: Infografía</p>
+    <p style="margin-top:1rem; font-size:0.82rem; color:rgba(255,255,255,0.3)">Diseño basado en principios de aprendizaje multimedia de Mayer · PWA autocontenida</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  // ===== QUIZ DATA =====
+  const quizData = [
+    {
+      question: "¿Cuántos jugadores tiene cada equipo en el campo durante un partido de balonmano?",
+      options: ["5 jugadores", "7 jugadores", "9 jugadores", "11 jugadores"],
+      correct: 1,
+      feedback: {
+        correct: "✅ ¡Correcto! Son 6 jugadores de campo + 1 portero = 7 en total.",
+        wrong: "❌ Son 7 jugadores: 6 de campo y 1 portero. ¡Recuérdalo!"
+      }
+    },
+    {
+      question: "¿A qué distancia de la portería se lanza un penalti en balonmano?",
+      options: ["5 metros", "6 metros", "7 metros", "9 metros"],
+      correct: 2,
+      feedback: {
+        correct: "✅ ¡Exacto! El punto de penalti está a 7 metros de la portería.",
+        wrong: "❌ El penalti se lanza desde los 7 metros. ¡No confundas con el área de 6m!"
+      }
+    },
+    {
+      question: "¿Cuánto dura un partido oficial de balonmano en total?",
+      options: ["40 minutos", "50 minutos", "60 minutos", "90 minutos"],
+      correct: 2,
+      feedback: {
+        correct: "✅ ¡Perfecto! 2 tiempos de 30 minutos = 60 minutos de juego.",
+        wrong: "❌ Son 2 tiempos de 30 minutos cada uno, en total 60 minutos."
+      }
+    },
+    {
+      question: "¿Cuál es la técnica de lanzamiento en la que el jugador salta al aire antes de disparar?",
+      options: ["Lanzamiento de apoyo", "Lanzamiento en suspensión", "Rotación de cadera", "Pase lateral"],
+      correct: 1,
+      feedback: {
+        correct: "✅ ¡Excelente! El lanzamiento en suspensión es el más poderoso y difícil de defender.",
+        wrong: "❌ Es el lanzamiento en suspensión: saltar al aire para generar mayor ángulo y potencia."
+      }
+    }
+  ];
+
+  // ===== QUIZ STATE =====
+  let currentQ = 0;
+  let score = 0;
+  let answered = false;
+
+  function renderQuestion() {
+    const q = quizData[currentQ];
+    const progress = ((currentQ) / quizData.length) * 100;
+    document.getElementById('quizProgress').style.width = progress + '%';
+    document.querySelector('.quiz-progress-bar').setAttribute('aria-valuenow', Math.round(progress));
+
+    const card = document.getElementById('quizCard');
+    card.innerHTML = `
+      <div class="quiz-question-num">Pregunta ${currentQ + 1} de ${quizData.length}</div>
+      <div class="quiz-question-text">${q.question}</div>
+      <div class="quiz-options" role="group" aria-label="Opciones de respuesta">
+        ${q.options.map((opt, i) => `
+          <button class="quiz-btn" onclick="selectAnswer(${i})" aria-label="${opt}">
+            <span class="quiz-btn-icon" aria-hidden="true">${['🅰️','🅱️','🆑','🆔'][i]}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="quizFeedback" role="alert" aria-live="polite"></div>
+      <div class="quiz-nav">
+        <div class="quiz-score-display" aria-label="Puntuación actual">⭐ ${score}/${quizData.length}</div>
+        <button class="quiz-nav-btn primary" id="nextBtn" onclick="nextQuestion()" disabled aria-label="Siguiente pregunta">
+          ${currentQ < quizData.length - 1 ? 'Siguiente →' : 'Ver resultado 🏆'}
+        </button>
+      </div>
+    `;
+    answered = false;
+  }
+
+  function selectAnswer(selectedIndex) {
+    if (answered) return;
+    answered = true;
+
+    const q = quizData[currentQ];
+    const buttons = document.querySelectorAll('.quiz-btn');
+    const feedback = document.getElementById('quizFeedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    buttons.forEach(btn => btn.disabled = true);
+
+    const isCorrect = selectedIndex === q.correct;
+    if (isCorrect) score++;
+
+    buttons[selectedIndex].classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) buttons[q.correct].classList.add('correct');
+
+    feedback.textContent = isCorrect ? q.feedback.correct : q.feedback.wrong;
+    feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+
+    nextBtn.disabled = false;
+  }
+
+  function nextQuestion() {
+    currentQ++;
+    if (currentQ < quizData.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('quizProgress').style.width = '100%';
+    document.querySelector('.quiz-progress-bar').setAttribute('aria-valuenow', 100);
+
+    const pct = (score / quizData.length) * 100;
+    let emoji, msg;
+    if (pct === 100)     { emoji = '🏆'; msg = '¡Eres un experto del balonmano! ¡Increíble!'; }
+    else if (pct >= 75)  { emoji = '🥇'; msg = '¡Excelente resultado! Casi perfecto.'; }
+    else if (pct >= 50)  { emoji = '💪'; msg = '¡Buen intento! Repasa los datos clave.'; }
+    else                  { emoji = '📚'; msg = '¡Sigue aprendiendo! Vuelve a leer la infografía.'; }
+
+    const card = document.getElementById('quizCard');
+    card.innerHTML = `
+      <div class="quiz-result" role="region" aria-label="Resultado del quiz">
+        <span class="quiz-result-emoji" role="img" aria-label="${emoji}">${emoji}</span>
+        <h3>${msg}</h3>
+        <span class="score-big" aria-label="Puntuación: ${score} de ${quizData.length}">${score}/${quizData.length}</span>
+        <p>Respondiste correctamente <strong style="color:var(--orange)">${score}</strong> de <strong style="color:var(--orange)">${quizData.length}</strong> preguntas</p>
+        <button class="quiz-retry-btn" onclick="restartQuiz()" aria-label="Intentar el quiz de nuevo">
+          🔄 Intentar de nuevo
+        </button>
+      </div>
+    `;
+  }
+
+  function restartQuiz() {
+    currentQ = 0;
+    score = 0;
+    answered = false;
+    renderQuestion();
+  }
+
+  // Init
+  renderQuestion();
+
+  // ===== SERVICE WORKER (inline via Blob) =====
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE = 'balonmano-v1';
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./'])));
+      });
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request))
+        );
+      });
+    `;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(() => {});
+  }
+
+  // ===== INTERSECTION OBSERVER (fade-in on scroll) =====
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.data-card, .step-card, .timeline-item, .gk-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  }
+  </script>
+</body>
+</html>
